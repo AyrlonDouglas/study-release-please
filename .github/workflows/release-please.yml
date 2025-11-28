@@ -10,15 +10,24 @@ permissions:
 
 name: release-please
 
-jobs: 
+jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release-please.outputs.release_created }}
+      upload_url: ${{ steps.release-please.outputs.upload_url }}
+      html_url: ${{ steps.release-please.outputs.html_url }}
+      tag_name: ${{ steps.release-please.outputs.tag_name }}
+      version: ${{ steps.release-please.outputs.version }}
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release-please
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           # this is a built-in strategy in release-please, see "Action Inputs"
           # for more options
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
           release-type: node
       - name: Print release outputs for debugging
         continue-on-error: true
